@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Insurance Expense Prediction</title>
+  <style>
+    /* CSS styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #060570;
+      color: #fff;
+      padding: 7px;
+    }
+
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .navbar li a {
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-color: #f7f9fa;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    form {
+      width: 400px;
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+
+    input[type="submit"] {
+      background-color: #060570;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .result-box {
+    width: 30%;
+    padding: 30px 50px;
+    font-size: 2.2rem;
+    color: #060570;
+    background-color: rgb(196, 220, 252);
+    margin-top: 2rem;
+    border-radius: 20%;
+    display: none;
+      text-align: center;
+
+}
+
+    .result-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #060570;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .result-content {
+      font-size: 1.2rem;
+      line-height: 1.4;
+      color: #ff0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="https://github.com/johntorfi/insurance_premium/blob/main/InsurancePremium.ipynb">Github</a></li>
+      <li><a href="mailto:john.torfi@gmail.com">Contact</a></li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <h2>Insurance Expense Prediction App</h2>
+    <form id="prediction-form">
+      <input type="number" id="age" name="age" min="18" max="120" required placeholder="Age between 18 to 120">
+      <input type="number" id="bmi" name="bmi" min="15" max="55" step="0.1" required placeholder="BMI between 15-55">
+      <input type="number" id="children" name="children" min="0" max="6" required placeholder="Number of children between 0-6">
+      <select id="sex" name="sex" required>
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+      </select>
+      <select id="smoker" name="smoker" required>
+        <option value="no">No
+        <option value="no">Yes
+
+        </select>
+        <select id="region" name="region" required>
+          <option value="northeast">Northeast</option>
+          <option value="northwest">Northwest</option>
+          <option value="southeast">Southeast</option>
+          <option value="southwest">Southwest</option>
+        </select>
+        <input type="submit" value="Predict">
+      </form>
+      <div class="result-box" id="prediction-result">
+        <h2 class="result-title">Estimated Quote</h2>
+        <div class="result-content"></div>
+      </div>
+    </div>
+    <script>
+      // JavaScript code to handle form submission and display the prediction result
+     
+      const form = document.querySelector('#prediction-form');
+      const predictionResult = document.querySelector('#prediction-result');
+      const resultContent = predictionResult.querySelector('.result-content');
+  
+      form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+  
+        const formData = new FormData(form);
+  
+        // Convert form data to JSON
+        const jsonData = {};
+        for (const [name, value] of formData) {
+          jsonData[name] = value;
+        }
+  
+        // Send a POST request to the prediction endpoint with JSON data
+        fetch('/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(jsonData)
+        })
+          .then(response => response.json())
+          .then(result => {
+            // Display the prediction result
+            const quote = result.prediction.toFixed(2);
+            resultContent.innerHTML = `<p>${quote}</p>`;
+            predictionResult.style.display = 'block';
+          })
+          .catch(error => {
+            // Handle any errors that occur during the prediction request
+            console.error('Prediction request error:', error);
+          });
+      });
+    </script>
+  </body>
+  </html>

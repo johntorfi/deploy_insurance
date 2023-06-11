@@ -3,8 +3,7 @@ import joblib
 import pandas as pd
 
 app = Flask(__name__)
-#model = joblib.load('/Users/neda/Desktop/insurance/best_random_forest_model.pkl')
-model = joblib.load('/home/johntorfi/mysite/best_random_forest_model.pkl')
+model = joblib.load('/Users/neda/Desktop/insurance/best_random_forest_model.pkl')
 
 @app.route('/')
 def index():
